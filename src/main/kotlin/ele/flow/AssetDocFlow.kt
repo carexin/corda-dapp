@@ -19,6 +19,10 @@ import java.util.*
 
 /**
  * 资产相关文档的交易
+ *
+ * 实现思路:
+ * a添加资产, 之后广播出去, b通过资产的唯一标识向a所要资产信息(基于subflow), 相当于b拿到数据持久化到本地.
+ *
  * Created by lydon on 2018/8/24.
  */
 object AssetDocFlow {
