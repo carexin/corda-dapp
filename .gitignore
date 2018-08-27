@@ -9,6 +9,6 @@ build
 lib/dependencies/
 .DS_Store
 out
-corda-app.iml
+corda-dapp.iml
 .idea
 gradle/wrapper/gradle-4.4.1-all.zip
