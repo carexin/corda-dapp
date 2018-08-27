@@ -1,5 +1,7 @@
 package get.test
 
+import ele.dto.AssetDoc
+import ele.flow.AssetDocFlow
 import ele.flow.TwoPartyFlow
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.core.identity.CordaX500Name
@@ -15,7 +17,7 @@ class FlowTests {
 
     @Test
     fun startTrasactionRpc() {
-        val host = "localhost:10004"
+        val host = "localhost:10007"
         val username = "user1"
         val password = "test"
         val proxys = loginToCordaNode(host, username, password)
@@ -24,13 +26,26 @@ class FlowTests {
 
         println(a)
 
-        val party = proxys.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyB,L=New York,C=US"))
+        val party = proxys.wellKnownPartyFromX500Name(CordaX500Name.parse("O=PartyA,L=London,C=GB"))
         println(party)
 
-        val createHandle = proxys.startFlowDynamic(TwoPartyFlow::class.java, party, "你好")
+        val createHandle = proxys.startFlowDynamic(AssetDocFlow.Initiator::class.java,"bian_hao", party)
 
         println("rpc返回结果: ${createHandle.returnValue.getOrThrow()}")
 
+    }
+
+    @Test
+    fun `add asset`(){
+        val host = "localhost:10004"
+        val username = "user1"
+        val password = "test"
+        val proxys = loginToCordaNode(host, username, password)
+
+        val createHandle = proxys.startFlowDynamic(AssetDocFlow.Create::class.java,
+               AssetDoc ("bian_hao","name_xxxxxxxxxx", "content_123214325352433242") )
+
+        println("rpc返回结果: ${createHandle.returnValue.getOrThrow()}")
     }
 
     fun loginToCordaNode(host: String, username: String, password: String): CordaRPCOps {

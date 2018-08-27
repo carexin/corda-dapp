@@ -4,6 +4,9 @@ import co.paralleluniverse.fibers.Suspendable
 import ele.Commands
 import ele.contract.AssetDocContact
 import ele.dto.AssetDoc
+import ele.queryBy
+import ele.queryCriteria
+import ele.schema.AssetSchemaV1
 import ele.state.AssetDocState
 import net.corda.core.contracts.StateAndContract
 import net.corda.core.flows.*
@@ -41,7 +44,7 @@ object AssetDocFlow {
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
                     myParty), AssetDocContact.CONTRACT_ID)
 
-            txBuilder.addCommand(Commands.Create(),myParty.owningKey)
+            txBuilder.addCommand(Commands.Create(), myParty.owningKey)
 
             txBuilder.withItems(
                     ourOutput
@@ -59,24 +62,48 @@ object AssetDocFlow {
     /**
      * buyer 购买一份资产
      *
-     * @param docName 用于查询的唯一标识.
+     * @param assetNo 用于查询的唯一标识.
      * @param sellerParty
      */
     @InitiatingFlow
     @StartableByRPC
-    class Initiator(private val docName: String, private val sellerParty: Party) : FlowLogic<String>() {
+    class Initiator(private val assetNo: String, private val sellerParty: Party) : FlowLogic<String>() {
 
         @Suspendable
         override fun call(): String {
-            if (docName.isEmpty()) throw IllegalArgumentException("docName can't be empty")
+            if (assetNo.isEmpty()) throw IllegalArgumentException("docName can't be empty")
             val session = initiateFlow(sellerParty)
-            logger.info("send docName : $docName")
-            session.send(docName)
+            logger.info("send docName : $assetNo")
+            session.send(assetNo)
 
             // subflow 返回值
-            val receivedMessage = session.receive<String>().unwrap { it -> it }
-            logger.info("receivedMessage : $receivedMessage")
-            return receivedMessage
+            val assetDoc = session.receive<AssetDoc>().unwrap { it -> it }
+            logger.info("receivedMessage : $assetDoc")
+
+            /*----------------------------------------------------*/
+            val myParty = ourIdentity
+            val defaultNotary = serviceHub.networkMapCache.notaryIdentities[0]
+
+            val txBuilder = TransactionBuilder(defaultNotary)
+
+            val ourOutput = StateAndContract(AssetDocState(
+                    assetDoc,
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
+                    myParty), AssetDocContact.CONTRACT_ID)
+
+            txBuilder.addCommand(Commands.Create(), myParty.owningKey)
+
+            txBuilder.withItems(
+                    ourOutput
+            )
+
+            txBuilder.verify(serviceHub)
+
+            val signedTransaction = serviceHub.signInitialTransaction(txBuilder)
+            subFlow(FinalityFlow(signedTransaction))
+
+            // 返回资产名称
+            return assetDoc.assetName
         }
     }
 }
@@ -91,11 +118,18 @@ object AssetDocSellerFlow {
 
         @Suspendable
         override fun call() {
-            val receivedDocName = counterPartySession.receive(String::class.java).unwrap { it -> it }
-            logger.info("receivedDocName: $receivedDocName")
+            val assetNo = counterPartySession.receive(String::class.java).unwrap { it -> it }
 
+            // 构建查询
+            val permissionCriteria = queryCriteria { AssetSchemaV1.Persistent::assetNo.equal(assetNo) }
+            val states = queryBy<AssetDocState>(permissionCriteria)
+
+            if (states.isEmpty()) throw IllegalArgumentException("can't find AssetDocState by assetNo = $assetNo")
+
+            val assetDoc = states[0].state.data.data
+
+            logger.info("receivedDocName: $assetNo")
+            counterPartySession.send(assetDoc)
         }
-
     }
-
 }

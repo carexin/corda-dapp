@@ -3,26 +3,25 @@ package ele
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.ContractState
+import net.corda.core.contracts.StateAndRef
+import net.corda.core.flows.FlowLogic
 import net.corda.core.identity.AbstractParty
+import net.corda.core.node.services.vault.Builder
+import net.corda.core.node.services.vault.CriteriaExpression
+import net.corda.core.node.services.vault.QueryCriteria
+import net.corda.core.node.services.vault.builder
+import net.corda.core.schemas.PersistentState
 
 /**
  * Created by lydon on 2018/8/27.
  */
 interface Commands : CommandData {
     class Create : Commands
-    class Update : Commands
-
-    companion object {
-        inline fun createCommand(participants: List<AbstractParty>)
-                = Command(Create(), participants.map { it.owningKey })
-
-        inline fun updateCommand(participants: List<AbstractParty>)
-                = Command(Update(), participants.map { it.owningKey })
-
-        inline fun createCommand(state: ContractState)
-                = createCommand(state.participants)
-
-        inline fun updateCommand(state: ContractState)
-                = updateCommand(state.participants)
-    }
 }
+
+inline fun <reified T : ContractState> FlowLogic<*>.queryBy(criteria: QueryCriteria): List<StateAndRef<T>> {
+    return serviceHub.vaultService.queryBy(T::class.java, criteria).states
+}
+
+inline fun queryCriteria(init: Builder.() -> CriteriaExpression<out PersistentState, Boolean>) = QueryCriteria
+        .VaultCustomQueryCriteria(builder(init))

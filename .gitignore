@@ -11,3 +11,4 @@ lib/dependencies/
 out
 corda-app.iml
 .idea
+gradle/wrapper/gradle-4.4.1-all.zip
