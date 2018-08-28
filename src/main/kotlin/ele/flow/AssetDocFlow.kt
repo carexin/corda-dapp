@@ -2,7 +2,7 @@ package ele.flow
 
 import co.paralleluniverse.fibers.Suspendable
 import ele.Commands
-import ele.contract.AssetDocContact
+import ele.contract.AssetDocContract
 import ele.dto.AssetDoc
 import ele.queryBy
 import ele.queryCriteria
@@ -22,6 +22,8 @@ import java.util.*
  *
  * 实现思路:
  * a添加资产, 之后广播出去, b通过资产的唯一标识向a所要资产信息(基于subflow), 相当于b拿到数据持久化到本地.
+ *
+ * 好处是只会从a中拿到最新的数据, 不会把连带的历史信息拿过来.
  *
  * Created by lydon on 2018/8/24.
  */
@@ -46,7 +48,7 @@ object AssetDocFlow {
             val ourOutput = StateAndContract(AssetDocState(
                     assetDoc,
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
-                    myParty), AssetDocContact.CONTRACT_ID)
+                    myParty), AssetDocContract.CONTRACT_ID)
 
             txBuilder.addCommand(Commands.Create(), myParty.owningKey)
 
@@ -93,7 +95,7 @@ object AssetDocFlow {
             val ourOutput = StateAndContract(AssetDocState(
                     assetDoc,
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
-                    myParty), AssetDocContact.CONTRACT_ID)
+                    myParty), AssetDocContract.CONTRACT_ID)
 
             txBuilder.addCommand(Commands.Create(), myParty.owningKey)
 

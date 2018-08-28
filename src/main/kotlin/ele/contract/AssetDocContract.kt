@@ -6,11 +6,11 @@ import net.corda.core.transactions.LedgerTransaction
 /**
  * Created by lydon on 2018/8/27.
  */
-class AssetDocContact : Contract {
+class AssetDocContract : Contract {
 
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "ele.contract.AssetDocContact"
+        val CONTRACT_ID = "ele.contract.AssetDocContract"
     }
 
     // 合约, 用于校验交易
