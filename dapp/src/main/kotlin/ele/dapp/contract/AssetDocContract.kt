@@ -10,12 +10,12 @@ class AssetDocContract : Contract {
 
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "ele.dapp.AssetDocContract"
+        val CONTRACT_ID = "ele.dapp.contract.AssetDocContract"
     }
 
     // 合约, 用于校验交易
     override fun verify(tx: LedgerTransaction) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
 }

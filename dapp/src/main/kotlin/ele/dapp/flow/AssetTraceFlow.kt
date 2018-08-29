@@ -5,16 +5,19 @@ import ele.dapp.Commands
 import ele.dapp.contract.AssetDocContract
 import ele.dapp.contract.AssetTraceStateContract
 import ele.dapp.dto.AssetDoc
+import ele.dapp.queryCriteria
+import ele.dapp.schema.AssetSchemaV1
+import ele.dapp.schema.AssetTraceSchemaV1
 import ele.dapp.state.AssetDocState
 import ele.dapp.state.AssetTraceState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateAndContract
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.flows.*
+import net.corda.core.identity.Party
+import net.corda.core.node.services.vault.Builder.equal
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.unwrap
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -67,4 +70,38 @@ object AssetTraceFlow {
             return subFlow(FinalityFlow(signedTransaction))
         }
     }
+
+    /**
+     * 卖方获取资产数据
+     */
+    @InitiatingFlow
+    @StartableByRPC
+    class GetAsset(private val assetNo: String, private val sellerParty: Party) : FlowLogic<String>() {
+        override fun call(): String {
+
+            val session = initiateFlow(sellerParty)
+            // 发送的内容可以进行封装Message
+            // 交易由买家完成.
+            // [send源代码了解下.]
+            session.send(assetNo)
+
+            // 返回值 目前可以写成String, 交易的唯一标识之类的.
+            return session.receive<String>().unwrap { it -> it }
+        }
+    }
+
+    class Responser(private val counterPartySession: FlowSession) : FlowLogic<String>() {
+        override fun call(): String {
+            val assetNo = counterPartySession.receive<String>().unwrap { it -> it }
+
+            // 查询出对应此assetNo的最新的traceAsset
+            val assetStates = queryCriteria { AssetTraceSchemaV1.Persistent::tag.equal(assetNo) }
+
+            // 查出附件
+            val txBuilder = TransactionBuilder(ourIdentity)
+            return ""
+        }
+
+    }
+
 }

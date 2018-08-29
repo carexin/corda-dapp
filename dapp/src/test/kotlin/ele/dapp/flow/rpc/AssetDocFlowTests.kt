@@ -23,7 +23,7 @@ class AssetDocFlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(ImmutableList.of("ele.dapp.flow", "ele.dapp.schema", "ele.contract"))
+        network = MockNetwork(ImmutableList.of("ele.dapp.flow", "ele.dapp.schema", "ele.dapp.contract"))
         nodeA = network.createPartyNode(null)
         nodeB = network.createPartyNode(null)
         network.runNetwork()
@@ -32,7 +32,7 @@ class AssetDocFlowTests {
 
     @Test
     fun `flow records one assetDoc`() {
-        val assetDoc = AssetDoc("ssxzzzfdaf", "this is a assetDoc", "this is content")
+        val assetDoc = AssetDoc(assetNo = "ssxzzzfdaf", assetName = "this is a assetDoc", assetContent = "this is content")
         val flow = AssetDocFlow.Create(assetDoc)
         val future = nodeA.startFlow(flow)
         network.runNetwork()

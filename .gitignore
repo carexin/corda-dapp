@@ -4,11 +4,12 @@
 .idea/misc.xml
 .idea/uiDesigner.xml
 .idea/vcs.xml
-.idea/workspace.xml
+.idea/compiler.xml
+.idea/modules.xml
+.idea
 build
 lib/dependencies/
 .DS_Store
 out
-corda-dapp.iml
-.idea
+*.iml
 gradle/wrapper/gradle-4.4.1-all.zip
