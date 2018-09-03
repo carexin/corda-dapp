@@ -60,6 +60,7 @@ dependencies {
     compile 'io.github.lukehutch:fast-classpath-scanner:3.1.15'
 
     compile 'com.alibaba:fastjson:1.2.49'
+    compile 'com.google.code.gson:gson:2.8.5'
 
 }
 

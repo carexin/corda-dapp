@@ -44,7 +44,6 @@ object AssetDocFlow {
 
             val txBuilder = TransactionBuilder(defaultNotary)
 
-            // TODO 将java date util 转换为其他写法.
             val ourOutput = StateAndContract(AssetDocState(
                     assetDoc,
                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),

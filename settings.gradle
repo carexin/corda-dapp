@@ -2,4 +2,4 @@ rootProject.name = 'corda-dapp'
 
 include 'api'
 include 'dapp'
-
+include 'database'

@@ -13,10 +13,10 @@ import net.corda.core.schemas.QueryableState
  * Created by lydon on 2018/8/29.
  */
 class AssetAttachmentState(
-        private val assetNo: String, // asset的唯一标识, 用于交易时查到此附件hash
-        private val fileHash: String, // 整体的hash
-        private val partFileHash: String, // 每个单独文件的hash
-        private val fromParty: Party
+        val assetNo: String, // asset的唯一标识, 用于交易时查到此附件hash
+        val fileHash: String, // 整体的hash
+        val partFileHash: String, // 每个单独文件的hash
+        val fromParty: Party
 ) : QueryableState {
 
     override val participants: List<AbstractParty>

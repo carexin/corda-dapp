@@ -17,6 +17,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
+    maven { url "http://47.97.195.97:8082/nexus/content/repositories/snapshots/"}
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
     maven { url 'https://jitpack.io' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
@@ -34,6 +35,9 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 dependencies {
+
+    cordapp "com.phoenix:nbflows:$nbflow_version"
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
     testCompile "junit:junit:$junit_version"
