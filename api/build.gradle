@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
+        maven { url "http://47.97.195.97:8082/nexus/content/repositories/snapshots/"}
         mavenCentral()
         jcenter()
 
@@ -17,6 +18,7 @@ buildscript {
 
 repositories {
     mavenLocal()
+    maven { url "http://47.97.195.97:8082/nexus/content/repositories/snapshots/"}
     mavenCentral()
     jcenter()
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
@@ -33,13 +35,6 @@ apply plugin: 'io.spring.dependency-management'
 sourceCompatibility = 1.8
 
 dependencies {
-
-    compile(project(":dapp")) {
-        exclude group:'net.corda',module:'corda-node'
-        exclude group:'org.slf4j'
-        exclude group:'org.apache.logging.log4j'
-        exclude group: 'org.apache.activemq',module:'artemis-core-client'
-    }
 
     compile 'org.apache.activemq:artemis-commons:2.5.0'
     compile('org.apache.activemq:artemis-core-client:2.5.0') {
@@ -61,6 +56,13 @@ dependencies {
 
     compile 'com.alibaba:fastjson:1.2.49'
     compile 'com.google.code.gson:gson:2.8.5'
+
+    compile(project(":dapp")) {
+        exclude group:'net.corda',module:'corda-node'
+        exclude group:'org.slf4j'
+        exclude group:'org.apache.logging.log4j'
+        exclude group: 'org.apache.activemq',module:'artemis-core-client'
+    }
 
 }
 

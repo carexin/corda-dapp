@@ -1,4 +1,4 @@
-package ele.database.synchronization
+package ele.database.job
 
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

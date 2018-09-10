@@ -19,7 +19,7 @@ class AssetDocState(val data: AssetDoc,
         get() = listOf(fromParty)
 
     override fun generateMappedObject(schema: MappedSchema): PersistentState {
-        return when(schema){
+        return when (schema) {
             AssetSchemaV1 -> AssetSchemaV1.Persistent(
                     fromParty = fromParty.toString(),
                     assetNo = data.assetNo,
@@ -28,7 +28,6 @@ class AssetDocState(val data: AssetDoc,
             )
             else -> throw IllegalArgumentException("unrecognised schema $schema")
         }
-
     }
 
     override fun supportedSchemas(): Iterable<MappedSchema> {
