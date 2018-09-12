@@ -79,6 +79,7 @@ object AssetDocFlow {
             if (assetNo.isEmpty()) throw IllegalArgumentException("docName can't be empty")
             val session = initiateFlow(sellerParty)
             logger.info("send docName : $assetNo")
+
             session.send(assetNo)
 
             // subflow 返回值

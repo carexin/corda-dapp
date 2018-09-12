@@ -14,9 +14,10 @@ import org.junit.Test
  */
 class FlowTests {
 
+    // B从A获取数据.
     @Test
     fun startTransactionRpc() {
-        val host = "localhost:10010"
+        val host = "localhost:10007"
         val username = "user1"
         val password = "test"
         val proxys = loginToCordaNode(host, username, password)

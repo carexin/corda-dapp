@@ -12,3 +12,8 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+corda-node:
+  host: localhost:10004
+  username: user1
+  password: test

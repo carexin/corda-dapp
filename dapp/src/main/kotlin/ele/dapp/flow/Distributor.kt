@@ -34,7 +34,15 @@ object DistributorFlow {
             dtoArray.forEach {
                 val criteria = queryCriteria { DistributorSchemaV1.Persistent::clientNum.equal(it.clientNum) }
                 val hasState = queryBy<DistributorState>(criteria)
-                val outputState = DistributorState(it, myParty)
+                logger.info(it.toString())
+                val outputState = DistributorState(
+                        address = it.address,
+                        taxNum = it.taxNum,
+                        clientNum = it.clientNum,
+                        clientName = it.clientName,
+                        fromParty = myParty,
+                        updateTime = it.updateTime,
+                        distributorId = it.id)
 
                 if (hasState.isEmpty()) {
                     txBuilder.withItems(outputState + DistributorContract.contractId)
@@ -77,7 +85,7 @@ data class DistributorDTO(
         val clientNum: String,
         val address: String,
         val taxNum: String,
-        val dateTime: LocalDateTime
+        val updateTime: LocalDateTime
 ) {
     constructor() : this(1, "", "", "", "", LocalDateTime.now())
 }
@@ -95,27 +103,38 @@ object DistributorSchemaV1 : MappedSchema(schemaFamily = DistributorSchema.javaC
     @Table(name = "m_distributor")
     @Entity
     class Persistent(
+            @Column val distributorId: Int = Int.MIN_VALUE,
             @Column val fromParty: String = "",
             @Column val clientName: String = "",
             @Column val clientNum: String = "",
             @Column val address: String = "",
-            @Column val taxNum: String = ""
+            @Column val taxNum: String = "",
+            @Column val updateTime: LocalDateTime = LocalDateTime.MIN
     ) : PersistentState()
 }
 
 /**
  * State
  */
-data class DistributorState(private val data: DistributorDTO, private val fromParty: Party) : QueryableState {
+data class DistributorState(val distributorId: Int,
+                            val address: String,
+                            val clientName: String,
+                            val clientNum: String,
+                            val taxNum: String,
+                            val updateTime: LocalDateTime,
+                            val fromParty: Party) : QueryableState {
     override val participants: List<AbstractParty>
         get() = listOf(fromParty)
 
     override fun generateMappedObject(schema: MappedSchema): PersistentState = DistributorSchemaV1.Persistent(
+
+            distributorId = distributorId,
             fromParty = fromParty.toString(),
-            address = data.address,
-            clientName = data.clientName,
-            clientNum = data.clientNum,
-            taxNum = data.taxNum
+            address = address,
+            clientName = clientName,
+            clientNum = clientNum,
+            taxNum = taxNum,
+            updateTime = updateTime
     )
 
     override fun supportedSchemas(): Iterable<MappedSchema> = listOf(DistributorSchemaV1)

@@ -52,7 +52,7 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-reflect")
     testCompile "junit:junit:$junit_version"
 
-    compile 'io.github.lukehutch:fast-classpath-scanner:3.1.15'
+    compile 'io.github.lukehutch:fast-classpath-scanner:2.18.1'
 
     compile 'com.alibaba:fastjson:1.2.49'
     compile 'com.google.code.gson:gson:2.8.5'
