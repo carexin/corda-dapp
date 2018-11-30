@@ -27,7 +27,6 @@ buildscript {
 
 repositories {
     mavenLocal()
-    maven { url "http://47.97.195.97:8082/nexus/content/repositories/snapshots/" }
     jcenter()
     mavenCentral()
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
